@@ -1,6 +1,8 @@
 package io.searchbox.indices;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 import io.searchbox.client.config.ElasticsearchVersion;
 import org.elasticsearch.common.collect.MapBuilder;
 import org.junit.Test;
@@ -26,7 +28,10 @@ public class RolloverTest {
         Rollover rollover = new Rollover.Builder("twitter").conditions(rolloverConditions).build();
         assertEquals("POST", rollover.getRestMethodName());
         assertEquals("twitter/_rollover", rollover.getURI(ElasticsearchVersion.UNKNOWN));
-        assertEquals("{\"conditions\":{\"max_age\":\"1d\",\"max_docs\":\"10000\"}}", rollover.getData(new Gson()));
+        JsonParser parser = new JsonParser(); 
+        JsonElement o1 = parser.parse("{\"conditions\":{\"max_age\":\"1d\",\"max_docs\":\"10000\"}}"); 
+        JsonElement o2 = parser.parse(rollover.getData(new Gson())); 
+        assertEquals(o1, o2);
     }
 
     @Test
